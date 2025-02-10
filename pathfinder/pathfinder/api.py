@@ -207,12 +207,14 @@ class OpenRouter(ModelAPI):
     def __init__(self, model_name, seed):
         super().__init__(model_name, seed)
         from os import getenv
-
+        from dotenv import load_dotenv
         from openai import OpenAI
+
+        load_dotenv()
 
         self.client = OpenAI(
             base_url="https://openrouter.ai/api/v1",
-            api_key=getenv("OPENROUTER_API_KEY"),
+            api_key=os.getenv("OPENROUTER_API_KEY"),
         )
 
     def request_api(self, chat, tmeperature, top_p, max_tokens):
