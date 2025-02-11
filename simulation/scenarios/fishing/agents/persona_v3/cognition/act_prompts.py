@@ -35,7 +35,7 @@ def prompt_action_choose_amount_of_fish_to_catch(
         lm += f"\n"
         lm += f"Task: With a fishing range set between {interval[0]}-{interval[-1]}, how many tons of fish would you catch this month? "
         lm += reasoning_steps_prompt()
-        lm += ' Put the final answer after "Answer:", example Answer: N tons. You MUST end your answer in this format.'
+        lm += ' Put the final answer after "Answer:", example Answer: N tons. You MUST end your answer in this "Answer: N tons" format.'
 
     with assistant():
         lm = model.gen(
