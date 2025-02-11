@@ -104,6 +104,11 @@ def get_summary_runs(subset_name, WANDB=False):
                     "tags.3",
                     "tags.4",
                     "tags.5",
+                    "tags.6",
+                    "tags.7",
+                    "tags.8",
+                    "tags.9",
+                    "tags.10",
                     "experiment.name",
                     "experiment.agent.converse.inject_resource_observation",
                 ]

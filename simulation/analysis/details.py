@@ -13,6 +13,12 @@ from .app import app, global_store
 from .plots import get_figures_single_run
 from .utils import create_table, generate_colors
 
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+NUM_AGENTS = int(os.getenv("NUM_AGENTS"))
+
 details_layout = dmc.Stack(
     [
         dmc.Header(
@@ -79,7 +85,7 @@ details_layout = dmc.Stack(
                                                             "label": f"persona_{i}",
                                                             "value": f"persona_{i}",
                                                         }
-                                                        for i in range(5)
+                                                        for i in range(NUM_AGENTS)
                                                     ],
                                                     value="persona_0",
                                                 ),

@@ -12,6 +12,11 @@ from .converse_prompts import (
 )
 from .reflect_prompts import prompt_find_harvesting_limit_from_conversation
 
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+NUM_AGENTS = int(os.getenv("NUM_AGENTS"))
 
 class PollutionConverseComponent(ConverseComponent):
     def __init__(
@@ -61,10 +66,10 @@ class PollutionConverseComponent(ConverseComponent):
             focal_points = [current_context]
             if len(current_conversation) > 0:
                 # Last 4 utterances
-                for _, utterance in current_conversation[-4:]:
+                for _, utterance in current_conversation[1-NUM_AGENTS:]:
                     focal_points.append(utterance)
             focal_points = self.other_personas[current_persona.name].retrieve.retrieve(
-                focal_points, top_k=5
+                focal_points, top_k=NUM_AGENTS
             )
 
             if self.cfg.prompt_utterance == "one_shot":

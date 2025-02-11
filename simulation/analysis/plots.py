@@ -9,6 +9,11 @@ from plotly.subplots import make_subplots
 
 from utils.charts import prepare_table
 
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+NUM_AGENTS = int(os.getenv("NUM_AGENTS"))
 
 # find first round where either we have Nan or 0, for each column except x and round
 def compute_survival_months_stats(df):
@@ -17,7 +22,7 @@ def compute_survival_months_stats(df):
     for col in df.columns:
         if col not in ["x", "round"]:
             # Check for the first occurrence of 0 or NaN
-            first_invalid_index = df[df[col].isna() | (df[col] < 5)].index.min()
+            first_invalid_index = df[df[col].isna() | (df[col] < NUM_AGENTS)].index.min()
 
             if pd.notna(first_invalid_index):
                 # Print the round number of the first occurrence
@@ -493,12 +498,12 @@ def get_figures_single_run(
         rows=2,
         cols=3,
         subplot_titles=[
-            *[f"Persona {i}" for i in range(5)],
+            *[f"Persona {i}" for i in range(NUM_AGENTS)],
             "Fish limit - conversation",
         ],
     )
 
-    fig_single_resource_by_persona = {f"persona_{p}": go.Figure() for p in range(5)}
+    fig_single_resource_by_persona = {f"persona_{p}": go.Figure() for p in range(NUM_AGENTS)}
     fig_single_resource_by_persona["resource_limit"] = go.Figure()
 
     persona_to_position = [
@@ -527,7 +532,7 @@ def get_figures_single_run(
                 customdata=[(run, int(np.floor(i))) for i in resource_in_pool["x"]],
             )
         )
-        for p in range(5):
+        for p in range(NUM_AGENTS):
             persona_id = f"persona_{p}"
             # Filter the DataFrame for the current persona and action 'fish'
             d = df[
@@ -642,7 +647,7 @@ def get_figures_single_run(
         margin=dict(b=100),
     )
 
-    for p in range(5):
+    for p in range(NUM_AGENTS):
         fig_single_resource_by_persona[f"persona_{p}"].update_layout(
             title=f"Fish caught by persona {p}",
             xaxis_title="Month",
@@ -856,7 +861,7 @@ def get_num_successful_runs(
     for col in data.columns:
         if col not in ["x", "round"]:
             # Check for the first occurrence of 0 or NaN
-            first_invalid_index = data[data[col].isna() | (data[col] < 5)].index.min()
+            first_invalid_index = data[data[col].isna() | (data[col] < NUM_AGENTS)].index.min()
 
             if pd.notna(first_invalid_index):
                 # Print the round number of the first occurrence
@@ -866,5 +871,5 @@ def get_num_successful_runs(
                 survival_months = 12
                 collapsed.append(False)
             acc.append(survival_months)
-    count = 5 - np.sum(collapsed)
+    count = NUM_AGENTS - np.sum(collapsed)
     return count

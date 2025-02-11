@@ -10,6 +10,11 @@ from simulation.utils import ModelWandbWrapper
 
 from .environment import FishingConcurrentEnv, FishingPerturbationEnv
 
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+NUM_AGENTS = int(os.getenv("NUM_AGENTS"))
 
 def run(
     cfg: DictConfig,
@@ -50,7 +55,7 @@ def run(
             embedding_model,
             os.path.join(experiment_storage, f"persona_{i}"),
         )
-        for i in range(5)
+        for i in range(NUM_AGENTS)
     }
 
     # NOTE persona characteristics, up to design choices
@@ -98,7 +103,7 @@ def run(
         stats = {}
         STATS_KEYS = [
             "conversation_resource_limit",
-            *[f"persona_{i}_collected_resource" for i in range(5)],
+            *[f"persona_{i}_collected_resource" for i in range(NUM_AGENTS)],
         ]
         for s in STATS_KEYS:
             if s in action.stats:
