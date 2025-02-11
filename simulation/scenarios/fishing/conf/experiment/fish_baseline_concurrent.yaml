@@ -7,6 +7,12 @@ defaults:
   - persona@personas.persona_2: baseline_fisherman
   - persona@personas.persona_3: baseline_fisherman
   - persona@personas.persona_4: baseline_fisherman
+  - persona@personas.persona_5: baseline_fisherman
+  - persona@personas.persona_6: baseline_fisherman
+  - persona@personas.persona_7: baseline_fisherman
+  - persona@personas.persona_8: baseline_fisherman
+  - persona@personas.persona_9: baseline_fisherman
+
 
 env:
   name: fish_baseline_concurrent
@@ -16,7 +22,7 @@ env:
   poupulation_change_after_round: double_100_cap
   observation_other_agents_harvesting: true # true, false 
   language_nature: unconstrained #none, unconstrained
-  num_agents: 5
+  num_agents: 10
   harvesting_order: concurrent # random-sequential, concurrent
   assign_resource_strategy: stochastic # proportional, stochastic
   inject_universalization: false
@@ -28,17 +34,27 @@ env:
     
 
 personas:
-  num: 5
+  num: 10
   persona_0: 
-    name: John
+    name: Phil
   persona_1:
-    name: Kate
+    name: Ben
   persona_2:
-    name: Jack
+    name: Jos
   persona_3:
-    name: Emma
+    name: Harry
   persona_4:
-    name: Luke
+    name: Liam
+  persona_5:
+    name: Jacob
+  persona_6:
+    name: Jamie
+  persona_7:
+    name: Brydon
+  persona_8:
+    name: Jofra
+  persona_9:
+    name: Adil
 
 agent:
   agent_package: persona_v3

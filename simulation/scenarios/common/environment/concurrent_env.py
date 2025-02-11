@@ -5,6 +5,11 @@ import numpy as np
 import pandas as pd
 from omegaconf import DictConfig, OmegaConf
 from pettingzoo.utils import agent_selector
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+NUM_AGENTS = int(os.getenv("NUM_AGENTS"))
 
 from simulation.persona.common import (
     PersonaAction,
@@ -39,7 +44,7 @@ class ConcurrentEnv:
         self.cfg = cfg
         self.experiment_storage = experiment_storage
 
-        self.possible_agents = [f"persona_{i}" for i in range(5)]
+        self.possible_agents = [f"persona_{i}" for i in range(NUM_AGENTS)]
         self.agent_name_mapping = dict(
             zip(self.possible_agents, list(range(len(self.possible_agents))))
         )
@@ -214,7 +219,7 @@ class ConcurrentEnv:
             "resource_in_pool": self.cfg.initial_resource_in_pool,
             "resource_before_harvesting": self.cfg.initial_resource_in_pool,
             "sustainability_threshold": (
-                10
+                int(50 / NUM_AGENTS)
             ),  # each day the fish double and cap at 100, so maximum 50 can be fished
             "collected_resource": {},
             "wanted_resource": {},

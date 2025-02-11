@@ -22,6 +22,12 @@ from .concurrent_env import (
     get_reflection_day,
 )
 
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+NUM_AGENTS = int(os.getenv("NUM_AGENTS"))
+
 """
 Uses the env.perturbations settins
 
@@ -152,7 +158,7 @@ class PerturbationEnv(ConcurrentEnv):
                 # We want to see also the discussion in case no fish remain
                 self.terminations = {
                     agent: (
-                        self.internal_global_state["resource_in_pool"] < 5
+                        self.internal_global_state["resource_in_pool"] < NUM_AGENTS
                         or self.num_round >= self.cfg.max_num_rounds
                     )
                     for agent in self.agents
