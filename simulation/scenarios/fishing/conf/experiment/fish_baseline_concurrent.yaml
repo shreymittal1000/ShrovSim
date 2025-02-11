@@ -22,7 +22,7 @@ env:
   poupulation_change_after_round: double_100_cap
   observation_other_agents_harvesting: true # true, false 
   language_nature: unconstrained #none, unconstrained
-  num_agents: 10
+  num_agents: 20
   harvesting_order: concurrent # random-sequential, concurrent
   assign_resource_strategy: stochastic # proportional, stochastic
   inject_universalization: false
@@ -34,7 +34,7 @@ env:
     
 
 personas:
-  num: 10
+  num: 20
   persona_0: 
     name: Phil
   persona_1:
@@ -55,6 +55,26 @@ personas:
     name: Jofra
   persona_9:
     name: Adil
+  persona_10:
+    name: Saqib
+  persona_11:
+    name: Mark
+  persona_12:
+    name: Jake
+  persona_13:
+    name: David
+  persona_14:
+    name: Travis
+  persona_15:
+    name: Marnus
+  persona_16:
+    name: Steve
+  persona_17:
+    name: Glenn
+  persona_18:
+    name: Mitch
+  persona_19:
+    name: Cameron
 
 agent:
   agent_package: persona_v3
