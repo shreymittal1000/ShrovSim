@@ -22,6 +22,16 @@ defaults:
   - persona@personas.persona_17: baseline_fisherman
   - persona@personas.persona_18: baseline_fisherman
   - persona@personas.persona_19: baseline_fisherman
+  - persona@personas.persona_20: baseline_fisherman
+  - persona@personas.persona_21: baseline_fisherman
+  - persona@personas.persona_22: baseline_fisherman
+  - persona@personas.persona_23: baseline_fisherman
+  - persona@personas.persona_24: baseline_fisherman
+  - persona@personas.persona_25: baseline_fisherman
+  - persona@personas.persona_26: baseline_fisherman
+  - persona@personas.persona_27: baseline_fisherman
+  - persona@personas.persona_28: baseline_fisherman
+  - persona@personas.persona_29: baseline_fisherman
 
 
 env:
@@ -85,6 +95,26 @@ personas:
     name: Mitch
   persona_19:
     name: Cameron
+  persona_20:
+    name: Marcus
+  persona_21:
+    name: Alex
+  persona_22:
+    name: Pat
+  persona_23:
+    name: Mitch
+  persona_24:
+    name: Josh
+  persona_25:
+    name: Nathan
+  persona_26:
+    name: Adam
+  persona_27:
+    name: Quinton
+  persona_28:
+    name: Reeza
+  persona_29:
+    name: Temba
 
 agent:
   agent_package: persona_v3
