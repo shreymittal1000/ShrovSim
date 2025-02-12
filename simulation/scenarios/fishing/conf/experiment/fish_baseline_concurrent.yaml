@@ -12,6 +12,16 @@ defaults:
   - persona@personas.persona_7: baseline_fisherman
   - persona@personas.persona_8: baseline_fisherman
   - persona@personas.persona_9: baseline_fisherman
+  - persona@personas.persona_10: baseline_fisherman
+  - persona@personas.persona_11: baseline_fisherman
+  - persona@personas.persona_12: baseline_fisherman
+  - persona@personas.persona_13: baseline_fisherman
+  - persona@personas.persona_14: baseline_fisherman
+  - persona@personas.persona_15: baseline_fisherman
+  - persona@personas.persona_16: baseline_fisherman
+  - persona@personas.persona_17: baseline_fisherman
+  - persona@personas.persona_18: baseline_fisherman
+  - persona@personas.persona_19: baseline_fisherman
 
 
 env:
