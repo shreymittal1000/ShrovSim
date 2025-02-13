@@ -18,25 +18,25 @@ from .chat import (
 from .model import Model
 
 
-def get_api_model(name, seed):
-    if "z-gpt" in name.lower():
-        return AzureOpenAIAPI(name, seed)
-    if "gpt" in name.lower():
-        return OpenAIAPI(name, seed)
-    elif "mistral" in name.lower():
-        return MistralAPI(name, seed)
-    elif "claude" in name.lower():
-        return AnthropicAPI(name, seed)
-    elif "openrouter" in name.lower():
-        name = name.replace("openrouter-", "")
+def get_api_model(name, seed, backend_name):
+    if backend_name == "openrouter":
         return OpenRouter(name, seed)
     else:
-        raise ValueError(f"Unknown model name {name}")
+        if "z-gpt" in name.lower():
+            return AzureOpenAIAPI(name, seed)
+        if "gpt" in name.lower():
+            return OpenAIAPI(name, seed)
+        elif "mistral" in name.lower():
+            return MistralAPI(name, seed)
+        elif "claude" in name.lower():
+            return AnthropicAPI(name, seed)
+        else:
+            raise ValueError(f"Unknown model name {name}")
 
 
 def get_model(name, is_api=False, seed=42, backend_name="transformers"):
     if is_api:
-        return get_api_model(name, seed)
+        return get_api_model(name, seed, backend_name)
     trust_remote_code = False
     use_fast = True
     extend_context_length = True
