@@ -5,7 +5,7 @@ import os
 load_dotenv()
 NUM_AGENTS = int(os.getenv("NUM_AGENTS"))
 
-PERSONAS = ["Adam", "Matthew", "Ricky", "Damian", "Michael", "Andrew", "Shane", "Brett", "Jason", "Glenn",
+PERSONAS = ["Adam", "Matthew", "Richard", "Damian", "Michael", "Andrew", "Shane", "Brett", "Jason", "Glenn",
                 "Virender", "Sachin", "Rahul", "Laxman", "Sourav", "Yuvraj", "Mahendra", "Anil", "Harbhajan", "Zaheer",
                     "Graeme", "Hashim", "Herschelle", "Jacques", "Abraham", "Mark", "Shaun", "Nicky", "Makhaya", "Andre"]
 
