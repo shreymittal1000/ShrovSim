@@ -5,9 +5,9 @@ import os
 load_dotenv()
 NUM_AGENTS = int(os.getenv("NUM_AGENTS"))
 
-PERSONAS = ["Phil", "Ben", "Jos", "Harry", "Liam", "Jacob", "Jamie", "Brydon", "Jofra", "Adil",
-                "Saqib", "Mark", "Jake", "David", "Travis", "Marnus", "Steve", "Glenn", "Mitch", "Cameron",
-                    "Marcus", "Alex", "Pat", "Mitch", "Josh", "Nathan", "Adam", "Quinton", "Reeza", "Temba"]
+PERSONAS = ["Adam", "Matthew", "Ricky", "Damian", "Michael", "Andrew", "Shane", "Brett", "Jason", "Glenn",
+                "Virender", "Sachin", "Rahul", "Laxman", "Sourav", "Yuvraj", "Mahendra", "Anil", "Harbhajan", "Zaheer",
+                    "Graeme", "Hashim", "Herschelle", "Jacques", "Abraham", "Mark", "Shaun", "Nicky", "Makhaya", "Andre"]
 
 def list_to_string_with_dash(list_of_strings: list[str]) -> str:
     res = ""
