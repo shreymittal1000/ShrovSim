@@ -2,7 +2,7 @@ code_version: v7.0
 group_name: ''
 
 llm: 
-  path: TheBloke/Nous-Hermes-2-Mixtral-8x7B-DPO-GPTQ
+  path: deepseek-ai/DeepSeek-R1-Distill-Llama-8B
   backend: transformers
   is_api: false
   render: false
