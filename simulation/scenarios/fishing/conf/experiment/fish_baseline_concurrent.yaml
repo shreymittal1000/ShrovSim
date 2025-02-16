@@ -7,31 +7,31 @@ defaults:
   - persona@personas.persona_2: baseline_fisherman
   - persona@personas.persona_3: baseline_fisherman
   - persona@personas.persona_4: baseline_fisherman
-  - persona@personas.persona_5: baseline_fisherman
-  - persona@personas.persona_6: baseline_fisherman
-  - persona@personas.persona_7: baseline_fisherman
-  - persona@personas.persona_8: baseline_fisherman
-  - persona@personas.persona_9: baseline_fisherman
-  - persona@personas.persona_10: baseline_fisherman
-  - persona@personas.persona_11: baseline_fisherman
-  - persona@personas.persona_12: baseline_fisherman
-  - persona@personas.persona_13: baseline_fisherman
-  - persona@personas.persona_14: baseline_fisherman
-  - persona@personas.persona_15: baseline_fisherman
-  - persona@personas.persona_16: baseline_fisherman
-  - persona@personas.persona_17: baseline_fisherman
-  - persona@personas.persona_18: baseline_fisherman
-  - persona@personas.persona_19: baseline_fisherman
-  - persona@personas.persona_20: baseline_fisherman
-  - persona@personas.persona_21: baseline_fisherman
-  - persona@personas.persona_22: baseline_fisherman
-  - persona@personas.persona_23: baseline_fisherman
-  - persona@personas.persona_24: baseline_fisherman
-  - persona@personas.persona_25: baseline_fisherman
-  - persona@personas.persona_26: baseline_fisherman
-  - persona@personas.persona_27: baseline_fisherman
-  - persona@personas.persona_28: baseline_fisherman
-  - persona@personas.persona_29: baseline_fisherman
+  # - persona@personas.persona_5: baseline_fisherman
+  # - persona@personas.persona_6: baseline_fisherman
+  # - persona@personas.persona_7: baseline_fisherman
+  # - persona@personas.persona_8: baseline_fisherman
+  # - persona@personas.persona_9: baseline_fisherman
+  # - persona@personas.persona_10: baseline_fisherman
+  # - persona@personas.persona_11: baseline_fisherman
+  # - persona@personas.persona_12: baseline_fisherman
+  # - persona@personas.persona_13: baseline_fisherman
+  # - persona@personas.persona_14: baseline_fisherman
+  # - persona@personas.persona_15: baseline_fisherman
+  # - persona@personas.persona_16: baseline_fisherman
+  # - persona@personas.persona_17: baseline_fisherman
+  # - persona@personas.persona_18: baseline_fisherman
+  # - persona@personas.persona_19: baseline_fisherman
+  # - persona@personas.persona_20: baseline_fisherman
+  # - persona@personas.persona_21: baseline_fisherman
+  # - persona@personas.persona_22: baseline_fisherman
+  # - persona@personas.persona_23: baseline_fisherman
+  # - persona@personas.persona_24: baseline_fisherman
+  # - persona@personas.persona_25: baseline_fisherman
+  # - persona@personas.persona_26: baseline_fisherman
+  # - persona@personas.persona_27: baseline_fisherman
+  # - persona@personas.persona_28: baseline_fisherman
+  # - persona@personas.persona_29: baseline_fisherman
 
 
 env:
@@ -42,7 +42,7 @@ env:
   poupulation_change_after_round: double_100_cap
   observation_other_agents_harvesting: true # true, false 
   language_nature: unconstrained #none, unconstrained
-  num_agents: 30
+  num_agents: 5
   harvesting_order: concurrent # random-sequential, concurrent
   assign_resource_strategy: stochastic # proportional, stochastic
   inject_universalization: false
@@ -54,7 +54,7 @@ env:
     
 
 personas:
-  num: 30
+  num: 5
   persona_0: 
     name: Adam
   persona_1:
