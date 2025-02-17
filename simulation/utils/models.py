@@ -10,6 +10,9 @@ from .logger import WandbLogger
 
 
 class ModelWandbWrapper:
+    """
+    A wrapper for agent backends that facilitates Weights & Biases (W&B) logging.
+    """
     def __init__(
         self,
         base_lm,
@@ -20,6 +23,18 @@ class ModelWandbWrapper:
         seed,
         is_api=False,
     ) -> None:
+        """
+        Initializes the ModelWandbWrapper.
+
+        Args:
+            base_lm (Model): The base language model.
+            render (bool): Whether to render and print outputs.
+            wanbd_logger (WandbLogger): Logger instance for tracking model execution.
+            temperature (float): Sampling temperature for text generation.
+            top_p (float): Top-p nucleus sampling parameter.
+            seed (int): Random seed for reproducibility.
+            is_api (bool, optional): Whether the model is API-based. Defaults to False.
+        """
         self.base_lm = base_lm
         self.render = render
         self.wanbd_logger = wanbd_logger
@@ -37,11 +52,33 @@ class ModelWandbWrapper:
         phase_name,
         query_name,
     ):
+        """
+        Starts a new agent execution chain.
+
+        Args:
+            agent_name (str): The name of the agent.
+            phase_name (str): The phase of execution.
+            query_name (str): The specific query being executed.
+
+        Returns:
+            Model: The base language model instance.
+        """
         self.agent_chain = self.wanbd_logger.get_agent_chain(agent_name, phase_name)
         self.chain = self.wanbd_logger.start_chain(phase_name + "::" + query_name)
         return self.base_lm
 
     def end_chain(self, agent_name, lm):
+        """
+        Ends an execution chain and logs results.
+
+        Args:
+            agent_name (str): The name of the agent.
+            lm (Model): The language model instance.
+
+        Returns:
+            None:
+        """
+
         html = lm.html()  # lm._html()
         html = html.replace("<s>", "")
         html = html.replace("</s>", "")
@@ -49,7 +86,13 @@ class ModelWandbWrapper:
 
         def correct_rgba(html):
             """
-            Corrects rgba values in the HTML string.
+            Corrects RGBA values in an HTML string.
+
+            Args:
+                html (str): The HTML string.
+
+            Returns:
+                str: The corrected HTML string.
             """
             # This regex finds rgba values that have a decimal in the first three values
             rgba_pattern = re.compile(
@@ -77,7 +120,7 @@ class ModelWandbWrapper:
 
     def gen(
         self,
-        previous_lm: Model,
+        lm: Model,
         name=None,
         default_value="",
         *,
@@ -88,8 +131,24 @@ class ModelWandbWrapper:
         temperature=None,
         top_p=None,
     ):
+        """
+        Generates a response using the given language model.
+
+        Args:
+            lm (Model): The language model instance.
+            name (str, optional): The query name.
+            default_value (str, optional): The default response.
+            max_tokens (int, optional): The maximum number of tokens. Defaults to 8000.
+            stop_regex (str, optional): Regex for stopping criteria.
+            save_stop_text (bool, optional): Whether to save stop text. Defaults to False.
+            temperature (float, optional): Sampling temperature.
+            top_p (float, optional): Top-p nucleus sampling parameter.
+
+        Returns:
+            Model: The updated language model instance.
+        """
         start_time_ms = datetime.now().timestamp() * 1000
-        prompt = previous_lm._current_prompt()
+        prompt = lm._current_prompt()
 
         if temperature is None:
             temperature = self.temperature
@@ -98,7 +157,7 @@ class ModelWandbWrapper:
             top_p = 1.0
 
         try:
-            lm: Model = previous_lm + pathfinder.gen(
+            lm: Model = lm + pathfinder.gen(
                 name=name,
                 max_tokens=max_tokens,
                 stop_regex=stop_regex,
@@ -113,7 +172,7 @@ class ModelWandbWrapper:
                 RuntimeWarning,
             )
             res = default_value
-            lm = previous_lm.set(name, default_value)
+            lm = lm.set(name, default_value)
         finally:
             if self.render:
                 print(lm)
@@ -153,6 +212,22 @@ class ModelWandbWrapper:
         temperature=None,
         top_p=None,
     ):
+        """
+        Searches for a pattern in the model output using a regex constraint.
+
+        Args:
+            previous_lm (Model): The previous language model instance.
+            name (str, optional): The query name.
+            default_value (str, optional): The default response if no match is found.
+            max_tokens (int, optional): The maximum number of tokens. Defaults to 8000.
+            regex (str, optional): Regex pattern to search for in the output.
+            stop_regex (str, optional): Regex for stopping criteria.
+            temperature (float, optional): Sampling temperature.
+            top_p (float, optional): Top-p nucleus sampling parameter.
+
+        Returns:
+            Model: The updated language model instance with the search result.
+        """
         start_time_ms = datetime.now().timestamp() * 1000
         prompt = previous_lm._current_prompt()
 
@@ -214,6 +289,18 @@ class ModelWandbWrapper:
         name=None,
         # No sampling by select, since is used more as parsing previous generated text
     ):
+        """
+        Selects an option from a list based on the model's output.
+
+        Args:
+            previous_lm (Model): The previous language model instance.
+            options (list): The list of possible choices.
+            default_value (str, optional): The default response if no valid selection is found.
+            name (str, optional): The query name.
+
+        Returns:
+            Model: The updated language model instance with the selected option.
+        """
         start_time_ms = datetime.now().timestamp() * 1000
         prompt = previous_lm._current_prompt()
 

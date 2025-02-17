@@ -21,15 +21,22 @@ from .scenarios.sheep.run import run as run_scenario_sheep
 
 @hydra.main(version_base=None, config_path="conf", config_name="config")
 def main(cfg: DictConfig):
+    """
+    This is the main method of the program. This is what you run to start the simulation.
+    NOTE: the arguments passed to this method in terminal can be found in simulation/conf/config.yaml
+    """
     print(OmegaConf.to_yaml(cfg))
     set_seed(cfg.seed)
 
+    # Setting up the results logging in Wandb and locally
+    # Locally stored results can be found in results/{experiment_name}/{run_name}, e.g. simulation/results/fishing_v7.0/delicious-biscuit-99)
     logger = WandbLogger(cfg.experiment.name, OmegaConf.to_object(cfg), debug=cfg.debug)
     experiment_storage = os.path.join(
         os.path.dirname(__file__),
         f"./results/{cfg.experiment.name}/{logger.run_name}",
     )
 
+    # This is the case if we are using a single model type, where all agents use the same model (i.e. mix_llm not set or mix_llm=0)
     if len(cfg.mix_llm) == 0:
         model = get_model(cfg.llm.path, cfg.llm.is_api, cfg.seed, cfg.llm.backend)
 
@@ -44,6 +51,8 @@ def main(cfg: DictConfig):
         )
         wrappers = [wrapper] * cfg.experiment.personas.num
         wrapper_framework = wrapper
+
+    # This is the case where agents can have different backends for their model. You MUST set mix_llm to be the same as the number of agents.
     else:
         if len(cfg.mix_llm) != cfg.experiment.personas.num:
             raise ValueError(
@@ -81,11 +90,9 @@ def main(cfg: DictConfig):
                     is_api=llm_config.is_api,
                 )
                 unique_configs[config_key] = wrapper
-
-            # Use the already initialized wrapper for this configuration
             wrappers.append(unique_configs[config_key])
 
-        # The last wrapper is the framework
+        # Initializes the Framework agent, which acts as a summarizer for human-readable purposes
         llm_framework_config = cfg.framework_model
         config_key = (
             llm_framework_config.path,
@@ -116,19 +123,12 @@ def main(cfg: DictConfig):
         else:
             wrapper_framework = unique_configs[config_key]
 
+    # This is the class which deals with converting text into machine-understandable embeddings
     embedding_model = EmbeddingModel(device="cpu")
 
+    # This is where you can choose the scenario(s) to run. PLEASE choose fishing
     if cfg.experiment.scenario == "fishing":
         run_scenario_fishing(
-            cfg.experiment,
-            logger,
-            wrappers,
-            wrapper_framework,
-            embedding_model,
-            experiment_storage,
-        )
-    elif cfg.experiment.scenario == "sheep":
-        run_scenario_sheep(
             cfg.experiment,
             logger,
             wrappers,
@@ -148,6 +148,8 @@ def main(cfg: DictConfig):
     else:
         raise ValueError(f"Unknown experiment.scenario: {cfg.experiment.scenario}")
 
+    # The final stuff at the end is all Hydra configurations
+    # I do not know how this works, so best not to touch it I guess
     hydra_log_path = hydra.core.hydra_config.HydraConfig.get().runtime.output_dir
     shutil.copytree(f"{hydra_log_path}/.hydra/", f"{experiment_storage}/.hydra/")
     shutil.copy(f"{hydra_log_path}/main.log", f"{experiment_storage}/main.log")

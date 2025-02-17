@@ -1,3 +1,5 @@
+# This is where the config for the experiment is. If you do not pass any argument specifically, it will use the default value here.
+
 code_version: v7.0
 group_name: ''
 
@@ -26,5 +28,4 @@ hydra:
     dir: ./outputs/${uuid:}
   searchpath:
     - ./simulation/scenarios/fishing/conf
-    - ./simulation/scenarios/sheep/conf
     - ./simulation/scenarios/pollution/conf
