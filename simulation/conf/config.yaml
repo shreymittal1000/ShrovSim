@@ -2,7 +2,7 @@ code_version: v7.0
 group_name: ''
 
 llm: 
-  path: deepseek-ai/DeepSeek-R1-Distill-Llama-8B
+  path: Qwen/Qwen2.5-7B-Instruct-1M
   backend: transformers
   is_api: false
   render: false

@@ -172,3 +172,9 @@ human_evaluation/data
 api_usage/*
 subskills/results/
 .~lock.*
+
+# Slurm Euler Logs
+slurm*
+
+# The results can be seen at wandb, no need to commit
+simulation/results/
