@@ -16,8 +16,7 @@ from .utils import (
     reasoning_steps_prompt,
 )
 
-
-def prompt_action_choose_amount_of_fish_to_catch(
+def prompt_action_vote(
     model: ModelWandbWrapper,
     identity: PersonaIdentity,
     memories: list[str],
@@ -28,15 +27,18 @@ def prompt_action_choose_amount_of_fish_to_catch(
     consider_identity_persona: bool = True,
 ):
     lm = model.start_chain(identity.name, "fishing_cognition_act", "choose_act_options")
+
+    candidates = ["Pep", "Jose"]
 
     with user():
         lm += f"{get_sytem_prompt(identity)}\n"
         lm += location_time_info(current_location, current_time)
         lm += memory_prompt(identity, memories)
         lm += f"\n"
-        lm += f"Task: With a fishing range set between {interval[0]}-{interval[-1]}, how many tons of fish would you catch this month? "
+        lm += f"Task: Given the previous rounds of fishing and discussions, who would you vote for as the person with the best fishing strategy?"
+        lm += f"Vote 0 for {candidates[0]} and 1 for {candidates[1]}"
         lm += reasoning_steps_prompt()
-        lm += ' Put the final answer after "Answer:", example Answer: N tons. You MUST end your answer in this "Answer: N tons" format.'
+        lm += f' Put the final answer after "Answer:", example "Answer: 1" if you wish to vote for {candidates[1]}. You MUST end your answer in this "Answer: 1" format.'
 
     with assistant():
         lm = model.gen(
@@ -60,7 +62,7 @@ def prompt_action_choose_amount_of_fish_to_catch(
     return option, lm.html()
 
 
-def prompt_action_choose_amount_of_fish_to_catch_candidate(
+def prompt_action_vote_candidate(
     model: ModelWandbWrapper,
     identity: PersonaIdentity,
     memories: list[str],
@@ -72,14 +74,17 @@ def prompt_action_choose_amount_of_fish_to_catch_candidate(
 ):
     lm = model.start_chain(identity.name, "fishing_cognition_act", "choose_act_options")
 
+    candidates = ["Pep", "Jose"]
+
     with user():
         lm += f"{candidate_prompt(identity)}\n"
         lm += location_time_info(current_location, current_time)
         lm += memory_prompt(identity, memories)
         lm += f"\n"
-        lm += f"Task: With a fishing range set between {interval[0]}-{interval[-1]}, how many tons of fish would you catch this month? "
+        lm += f"Task: Given the previous rounds of fishing and discussions, who would you vote for as the person with the best fishing strategy?"
+        lm += f"Vote 0 for {candidates[0]} and 1 for {candidates[1]}"
         lm += reasoning_steps_prompt()
-        lm += ' Put the final answer after "Answer:", example Answer: N tons. You MUST end your answer in this "Answer: N tons" format.'
+        lm += f' Put the final answer after "Answer:", example "Answer: 1" if you wish to vote for {candidates[1]}. You MUST end your answer in this "Answer: 1" format.'
 
     with assistant():
         lm = model.gen(
@@ -101,4 +106,3 @@ def prompt_action_choose_amount_of_fish_to_catch_candidate(
     model.end_chain(identity.name, lm)
 
     return option, lm.html()
-

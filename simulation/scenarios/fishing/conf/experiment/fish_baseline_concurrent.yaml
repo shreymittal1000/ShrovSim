@@ -61,10 +61,10 @@ personas:
     name: Matthew
   persona_2:
     name: Richard
-  persona_3:
-    name: Damian
-  persona_4:
-    name: Michael
+  # persona_3:
+  #   name: Damian
+  # persona_4:
+  #   name: Michael
   # persona_5:
   #   name: Andrew
   # persona_6:
@@ -118,7 +118,7 @@ personas:
 
 agent:
   agent_package: persona_v3
-  system_prompt: v3
+  system_prompt: v3_vote
   cot_prompt: think_step_by_step # think_step_by_step | deep_breath
   act:
     universalization_prompt: false # true, false
@@ -134,3 +134,17 @@ agent:
   store:
     expiration_delta:
       days: 63
+
+candidate:
+  candidate_package: persona_v3
+  max_conversation_steps: 10
+  prompt_utterance: one_shot
+  
+  candidates:
+  # Candidate 1 has good logic and bad persuasion
+    candidate_0:
+      name: Pep
+
+    # Candidate 2 has bad logic and good persuasion
+    candidate_1:
+      name: Jose

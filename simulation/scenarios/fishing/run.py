@@ -10,12 +10,6 @@ from simulation.utils import ModelWandbWrapper
 
 from .environment import FishingConcurrentEnv, FishingPerturbationEnv
 
-from dotenv import load_dotenv
-import os
-
-load_dotenv()
-NUM_AGENTS = int(os.getenv("NUM_AGENTS"))
-
 def run(
     cfg: DictConfig,
     logger: ModelWandbWrapper,
@@ -25,7 +19,7 @@ def run(
     experiment_storage: str,
 ):
     if cfg.agent.agent_package == "persona_v3":
-        from .agents.persona_v3 import FishingPersona
+        from .agents.persona_v3 import FishingPersona, FishingCandidate
         from .agents.persona_v3.cognition import utils as cognition_utils
 
         if cfg.agent.system_prompt == "v3":
@@ -46,6 +40,8 @@ def run(
             cognition_utils.REASONING = "deep_breath"
     else:
         raise ValueError(f"Unknown agent package: {cfg.agent.agent_package}")
+    
+    NUM_AGENTS = cfg.env.num_agents
 
     personas = {
         f"persona_{i}": FishingPersona(
@@ -55,18 +51,38 @@ def run(
             embedding_model,
             os.path.join(experiment_storage, f"persona_{i}"),
         )
-        for i in range(NUM_AGENTS)
+        for i in range(NUM_AGENTS - 2)
     }
+    personas[f"persona_{NUM_AGENTS - 2}"] = FishingCandidate(
+        cfg.agent,
+        wrappers[NUM_AGENTS - 2],
+        framework_wrapper,
+        embedding_model,
+        os.path.join(experiment_storage, f"persona_{NUM_AGENTS - 2}"),
+    )
+    personas[f"persona_{NUM_AGENTS - 1}"] = FishingCandidate(
+        cfg.agent,
+        wrappers[NUM_AGENTS - 1],
+        framework_wrapper,
+        embedding_model,
+        os.path.join(experiment_storage, f"persona_{NUM_AGENTS - 1}"),
+    )
 
     # NOTE persona characteristics, up to design choices
     num_personas = cfg.personas.num
 
     identities = {}
-    for i in range(num_personas):
+    for i in range(num_personas - 2):
         persona_id = f"persona_{i}"
         identities[persona_id] = PersonaIdentity(
             agent_id=persona_id, **cfg.personas[persona_id]
         )
+    identities["candidate_0"] = PersonaIdentity(
+        agent_id="candidate_0", **cfg.candidate.candidates["candidate_0"]
+    )
+    identities["candidate_1"] = PersonaIdentity(
+        agent_id="candidate_1", **cfg.candidate.candidates["candidate_1"]
+    )
 
     # Standard setup
     agent_name_to_id = {obj.name: k for k, obj in identities.items()}
@@ -131,3 +147,16 @@ def run(
     env.save_log()
     for persona in personas:
         personas[persona].memory.save()
+
+    votes = [0, 0]
+    for persona in personas:
+        vote, _ = personas[persona].vote(obs)
+        votes[vote] += 1
+        print("Votes:", votes)
+        
+        # log votes and make them appear on W&B
+        logger.log_votes(votes)
+        logger.save(experiment_storage, agent_name_to_id)
+        logger.finish()
+        for persona in personas:
+            personas[persona].finish()

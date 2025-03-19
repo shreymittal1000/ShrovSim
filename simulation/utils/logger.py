@@ -303,3 +303,12 @@ class WandbLogger:
                 commit=False,
             )
         wandb.log(kwargs, step=self.global_step, commit=last_log)
+
+    def log_vote(self, votes):
+        """
+        Logs the voting results for each agent.
+
+        Returns:
+            None:
+        """
+        wandb.log({"experiment/votes": votes}, step=self.global_step, commit=True)

@@ -16,7 +16,6 @@ from simulation.utils import ModelWandbWrapper, WandbLogger
 from .persona import EmbeddingModel
 from .scenarios.fishing.run import run as run_scenario_fishing
 from .scenarios.pollution.run import run as run_scenario_pollution
-from .scenarios.sheep.run import run as run_scenario_sheep
 
 
 @hydra.main(version_base=None, config_path="conf", config_name="config")

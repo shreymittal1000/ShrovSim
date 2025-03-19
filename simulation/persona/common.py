@@ -137,6 +137,16 @@ class PersonaActionChat(PersonaAction):
         self.conversation = conversation
         self.conversation_resource_limit = conversation_resource_limit
 
+class PersonaActionVote(PersonaAction):
+    def __init__(
+        self,
+        agent_id,
+        location: str,
+        vote: int,
+    ) -> None:
+        super().__init__(agent_id, location)
+        self.vote = vote
+
 
 class PersonaEvent:
     description: str
