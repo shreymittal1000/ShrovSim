@@ -22,11 +22,9 @@ def prompt_action_vote(
     memories: list[str],
     current_location: str,
     current_time: datetime,
-    context: str,
-    interval: list[int],
-    consider_identity_persona: bool = True,
+    cfg
 ):
-    lm = model.start_chain(identity.name, "fishing_cognition_act", "choose_act_options")
+    lm = model.start_chain(identity.name, "fishing_cognition_act", "choose_act_options") # TODO change
 
     candidates = ["Pep", "Jose"]
 
@@ -68,11 +66,9 @@ def prompt_action_vote_candidate(
     memories: list[str],
     current_location: str,
     current_time: datetime,
-    context: str,
-    interval: list[int],
-    consider_identity_persona: bool = True,
+    cfg
 ):
-    lm = model.start_chain(identity.name, "fishing_cognition_act", "choose_act_options")
+    lm = model.start_chain(identity.name, "fishing_cognition_act", "choose_act_options") # TODO change
 
     candidates = ["Pep", "Jose"]
 

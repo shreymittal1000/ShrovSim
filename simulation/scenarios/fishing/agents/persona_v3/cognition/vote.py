@@ -20,21 +20,14 @@ class VotingActComponent(ActComponent):
         retrieved_memories: list[str],
         current_location: str,
         current_time: datetime,
-        context: str,
-        interval: list[int],
-        overusage_threshold: int,
     ):
-        if self.cfg.universalization_prompt:
-            context += get_universalization_prompt(overusage_threshold)
         res, html = prompt_action_vote(
             self.model,
             self.persona.identity,
             retrieved_memories,
             current_location,
             current_time,
-            context,
-            interval,
-            consider_identity_persona=self.cfg.consider_identity_persona,
+            self.cfg
         )
         res = int(res)
         return res, [html]
@@ -52,21 +45,14 @@ class VotingActComponentCandidate(ActComponent):
         retrieved_memories: list[str],
         current_location: str,
         current_time: datetime,
-        context: str,
-        interval: list[int],
-        overusage_threshold: int,
     ):
-        if self.cfg.universalization_prompt:
-            context += get_universalization_prompt(overusage_threshold)
         res, html = prompt_action_vote_candidate(
             self.model,
             self.persona.identity,
             retrieved_memories,
             current_location,
             current_time,
-            context,
-            interval,
-            consider_identity_persona=self.cfg.consider_identity_persona,
+            self.cfg
         )
         res = int(res)
         return res, [html]

@@ -32,6 +32,8 @@ def run(
             cognition_utils.SYS_VERSION = "v3_p3"
         elif cfg.agent.system_prompt == "v3_nocom":
             cognition_utils.SYS_VERSION = "v3_nocom"
+        elif cfg.agent.system_prompt == "v3_vote":
+            cognition_utils.SYS_VERSION = "v3_vote"
         else:
             cognition_utils.SYS_VERSION = "v1"
         if cfg.agent.cot_prompt == "think_step_by_step":
@@ -53,19 +55,19 @@ def run(
         )
         for i in range(NUM_AGENTS - 2)
     }
-    personas[f"persona_{NUM_AGENTS - 2}"] = FishingCandidate(
+    personas[f"candidate_0"] = FishingCandidate(
         cfg.agent,
         wrappers[NUM_AGENTS - 2],
         framework_wrapper,
         embedding_model,
-        os.path.join(experiment_storage, f"persona_{NUM_AGENTS - 2}"),
+        os.path.join(experiment_storage, f"candidate_0"),
     )
-    personas[f"persona_{NUM_AGENTS - 1}"] = FishingCandidate(
+    personas[f"candidate_1"] = FishingCandidate(
         cfg.agent,
         wrappers[NUM_AGENTS - 1],
         framework_wrapper,
         embedding_model,
-        os.path.join(experiment_storage, f"persona_{NUM_AGENTS - 1}"),
+        os.path.join(experiment_storage, f"candidate_1"),
     )
 
     # NOTE persona characteristics, up to design choices
@@ -78,10 +80,10 @@ def run(
             agent_id=persona_id, **cfg.personas[persona_id]
         )
     identities["candidate_0"] = PersonaIdentity(
-        agent_id="candidate_0", **cfg.candidate.candidates["candidate_0"]
+        agent_id="candidate_0", **cfg.agent.candidate.candidates["candidate_0"], is_candidate=True
     )
     identities["candidate_1"] = PersonaIdentity(
-        agent_id="candidate_1", **cfg.candidate.candidates["candidate_1"]
+        agent_id="candidate_1", **cfg.agent.candidate.candidates["candidate_1"], is_candidate=True
     )
 
     # Standard setup
@@ -105,6 +107,9 @@ def run(
         raise ValueError(f"Unknown environment class: {cfg.env.class_name}")
     agent_id, obs = env.reset()
 
+    iterable_agents = list(agent_id_to_name.keys())
+    iterable_agents.remove("framework")
+
     while True:
         agent = personas[agent_id]
         action = agent.loop(obs)
@@ -119,7 +124,7 @@ def run(
         stats = {}
         STATS_KEYS = [
             "conversation_resource_limit",
-            *[f"persona_{i}_collected_resource" for i in range(NUM_AGENTS)],
+            *[f"{i}_collected_resource" for i in iterable_agents],
         ]
         for s in STATS_KEYS:
             if s in action.stats:
@@ -150,8 +155,9 @@ def run(
 
     votes = [0, 0]
     for persona in personas:
-        vote, _ = personas[persona].vote(obs)
-        votes[vote] += 1
+        print("Persona:", persona)
+        vote = personas[persona].vote(obs)
+        votes[vote.vote] += 1
         print("Votes:", votes)
         
         # log votes and make them appear on W&B

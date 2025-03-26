@@ -94,7 +94,10 @@ class FishingConverseComponent(ConverseComponent):
             )
 
             if self.cfg.prompt_utterance == "one_shot":
-                prompt = prompt_converse_utterance_in_group
+                if current_persona.is_candidate:
+                    prompt = prompt_converse_utterance_in_group_candidate
+                else:
+                    prompt = prompt_converse_utterance_in_group
             else:
                 raise NotImplementedError(
                     f"prompt_utterance={self.cfg.prompt_utterance}"

@@ -179,7 +179,7 @@ class PerturbationEnv(ConcurrentEnv):
                     agents = list(np.random.permutation(self.agents))
                     self._agent_selector = agent_selector(agents)
             self.agent_selection = self._agent_selector.next()
-
+            
         return (
             self.agent_selection,
             self._observe(self.agent_selection),

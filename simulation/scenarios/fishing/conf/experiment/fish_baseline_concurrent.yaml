@@ -5,8 +5,8 @@ defaults:
   - persona@personas.persona_0: baseline_fisherman
   - persona@personas.persona_1: baseline_fisherman
   - persona@personas.persona_2: baseline_fisherman
-  - persona@personas.persona_3: baseline_fisherman
-  - persona@personas.persona_4: baseline_fisherman
+  - persona@personas.candidate_0: baseline_fisherman
+  - persona@personas.candidate_1: baseline_fisherman
   # - persona@personas.persona_5: baseline_fisherman
   # - persona@personas.persona_6: baseline_fisherman
   # - persona@personas.persona_7: baseline_fisherman
@@ -37,7 +37,7 @@ defaults:
 env:
   name: fish_baseline_concurrent
   class_name: fishing_perturbation_concurrent_env # use to select which code 
-  max_num_rounds: 12
+  max_num_rounds: 2
   initial_resource_in_pool: 100
   poupulation_change_after_round: double_100_cap
   observation_other_agents_harvesting: true # true, false 
@@ -135,16 +135,16 @@ agent:
     expiration_delta:
       days: 63
 
-candidate:
-  candidate_package: persona_v3
-  max_conversation_steps: 10
-  prompt_utterance: one_shot
-  
-  candidates:
-  # Candidate 1 has good logic and bad persuasion
-    candidate_0:
-      name: Pep
+  candidate:
+    candidate_package: persona_v3
+    max_conversation_steps: 10
+    prompt_utterance: one_shot
+    
+    candidates:
+    # Candidate 1 has good logic and bad persuasion
+      candidate_0:
+        name: Pep
 
-    # Candidate 2 has bad logic and good persuasion
-    candidate_1:
-      name: Jose
+      # Candidate 2 has bad logic and good persuasion
+      candidate_1:
+        name: Jose
