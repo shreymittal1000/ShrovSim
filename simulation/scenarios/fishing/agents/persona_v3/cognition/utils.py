@@ -5,11 +5,6 @@ import os
 load_dotenv()
 NUM_AGENTS = int(os.getenv("NUM_AGENTS"))
 
-PERSONAS = ["Adam", "Matthew", "Richard", "Damian", "Michael"]
-# "Andrew", "Shane", "Brett", "Jason", "Glenn",
-                # "Virender", "Sachin", "Rahul", "Laxman", "Sourav", "Yuvraj", "Mahendra", "Anil", "Harbhajan", "Zaheer",
-                    # "Graeme", "Hashim", "Herschelle", "Jacques", "Abraham", "Mark", "Shaun", "Nicky", "Makhaya", "Andre"]
-
 def list_to_string_with_dash(list_of_strings: list[str]) -> str:
     res = ""
     for s in list_of_strings:
@@ -120,28 +115,36 @@ SYS_VERSION = "v1"
 
 
 def get_sytem_prompt(persona):
+    PERSONAS = ["Adam", "Matthew", "Richard"]
+    CANDIDATES = ["Pep", "Jose"]
+    # "Damian", "Michael"]
+    # "Andrew", "Shane", "Brett", "Jason", "Glenn",
+                # "Virender", "Sachin", "Rahul", "Laxman", "Sourav", "Yuvraj", "Mahendra", "Anil", "Harbhajan", "Zaheer",
+                    # "Graeme", "Hashim", "Herschelle", "Jacques", "Abraham", "Mark", "Shaun", "Nicky", "Makhaya", "Andre"]
     if SYS_VERSION == "v1":
-        return get_sytem_prompt_v1(persona)
+        return get_sytem_prompt_v1(persona, PERSONAS)
     elif SYS_VERSION == "v3":
-        return get_sytem_prompt_v3(persona)
+        return get_sytem_prompt_v3(persona, PERSONAS)
     elif SYS_VERSION == "v3_p1":
-        return get_sytem_prompt_v3_p1(persona)
+        return get_sytem_prompt_v3_p1(persona, PERSONAS)
     elif SYS_VERSION == "v3_p2":
-        return get_sytem_prompt_v3_p2(persona)
+        return get_sytem_prompt_v3_p2(persona, PERSONAS)
     elif SYS_VERSION == "v3_p3":
-        return get_sytem_prompt_v3_p3(persona)
+        return get_sytem_prompt_v3_p3(persona, PERSONAS)
     elif SYS_VERSION == "v3_nocom":
-        return get_sytem_prompt_v3_nocom(persona)
+        return get_sytem_prompt_v3_nocom(persona, PERSONAS)
+    elif SYS_VERSION == "v3_vote":
+        return get_sytem_prompt_v3_voters(persona, PERSONAS, CANDIDATES)
     else:
         raise ValueError(f"Unknown SYS_VERSION: {SYS_VERSION}")
 
 
-def get_sytem_prompt_v1(persona):
+def get_sytem_prompt_v1(persona, PERSONAS):
     persona_names = copy.deepcopy(PERSONAS)
     persona_names.remove(persona.name)
     list_string_persona_name = ", ".join(persona_names)
     text = (
-        f"You are {persona.name}, a fisherman, and you fish each month in a lake along with four other fishermen ({list_string_persona_name})."
+        f"You are {persona.name}, a fisherman, and you fish each month in a lake along with {NUM_AGENTS - 1} other fishermen ({list_string_persona_name})."
         " The lake has a population capacity of 100 tons of fish."
         " Each month, each fisherman decides how many fish to take out of the lake between 0 and 100 tons."
         " At the end of the month, the remaining fish reproduce and double up to the population capacity."
@@ -159,12 +162,12 @@ def get_sytem_prompt_v1(persona):
     return text
 
 
-def get_sytem_prompt_v3(persona):
+def get_sytem_prompt_v3(persona, PERSONAS):
     persona_names = copy.deepcopy(PERSONAS)
     persona_names.remove(persona.name)
     list_string_persona_name = ", ".join(persona_names)
     text = (
-        f"You are {persona.name}, a fisherman, and you fish every month in a lake along with four other fishermen ({list_string_persona_name})."
+        f"You are {persona.name}, a fisherman, and you fish every month in a lake along with {NUM_AGENTS - 1} other fishermen ({list_string_persona_name})."
         " The lake has a carrying capacity of 100 tons of fish."
         " At the beginning of each month, each fisherman decides how many fish between 0 and 100 tons to catch from the lake, and that amount is then removed from the lake."
         " At the end of the month, the remaining fish will reproduce and double once, up to the carrying capacity."
@@ -176,18 +179,70 @@ def get_sytem_prompt_v3(persona):
         " there will be 60 tons of fish left at the end of the month before reproduction, and 100 tons after reproduction."
     )
 
+def get_sytem_prompt_v3_voters(persona, PERSONAS, CANDIDATES):
+    persona_names = copy.deepcopy(PERSONAS)
+    persona_names.remove(persona.name)
+    list_string_persona_name = ", ".join(persona_names)
+    candidate_names = copy.deepcopy(CANDIDATES)
+    list_string_candidate_name = ", ".join(candidate_names)
+    all_agents_string = ", ".join(persona_names + candidate_names)
+    text = (
+        f"You are {persona.name}, a fisherman, and you fish every month in a lake along with {NUM_AGENTS - 1} other fishermen ({all_agents_string})."
+        " The lake has a carrying capacity of 100 tons of fish."
+        " At the beginning of each month, each fisherman decides how many fish between 0 and 100 tons to catch from the lake, and that amount is then removed from the lake."
+        " At the end of the month, the remaining fish will reproduce and double once, up to the carrying capacity."
+        " For every ton of fish caught, a fisherman earns one thousand dollars."
+        " Each fisherman's goal is to optimize his income in the long run over many months."
+        " At the end of each month, the number of fish caught by each fisherman will be revealed, and the fishermen will have the opportunity to communicate with each other."
+        " They can use this as an opportunity to negotiate and persuade others to influence their behavior in the next month."
+        f" For example, if there are 90 tons of fish at the beginning of the month and the {NUM_AGENTS} fishermen catch a total of 30 fish,"
+        " there will be 60 tons of fish left at the end of the month before reproduction, and 100 tons after reproduction."
+        f" There are also elections going on to determine a fishing policy for all the fishermen, and each fisherman must choose between {len(CANDIDATES)} of the fishermen standing in the election ({list_string_candidate_name})."
+        " The candidates will be voted in after 12 months of regular life, during which time they will pitch their vision to you."
+        " Bear in mind that whatever policy they choose will become law, and each fisherman would have to fish the amount designated to them by that candidate if this candidate is elected."
+        " Vote for the candidate that you think serves your interests best in the long-term."
+    )
+
     if persona.goals != "":
         text += persona.goals
 
     return text
 
 
-def get_sytem_prompt_v3_p1(persona):
+def candidate_prompt(persona):
+    PERSONAS = ["Adam", "Matthew", "Richard"]
+    CANDIDATES = ["Pep", "Jose"]
+    CANDIDATES.remove(persona.name)
+    persona_names = copy.deepcopy(PERSONAS)
+    list_string_persona_name = ", ".join(persona_names)
+    list_string_candidate_name = ", ".join(CANDIDATES)
+    text = (
+        f"You are {persona.name}, a fisherman, and you fish every month in a lake along with {NUM_AGENTS - 1} other fishermen ({list_string_persona_name})."
+        f" The lake has a carrying capacity of 100 tons of fish."
+        " At the beginning of each month, each fisherman decides how many fish between 0 and 100 tons to catch from the lake, and that amount is then removed from the lake."
+        " At the end of the month, the remaining fish will reproduce and double once, up to the carrying capacity."
+        " For every ton of fish caught, a fisherman earns one thousand dollars."
+        " Each fisherman's goal is to optimize his income in the long run over many months."
+        " At the end of each month, the number of fish caught by each fisherman will be revealed, and the fishermen will have the opportunity to communicate with each other."
+        " They can use this as an opportunity to negotiate and persuade others to influence their behavior in the next month."
+        f" For example, if there are 90 tons of fish at the beginning of the month and the {NUM_AGENTS} fishermen catch a total of 30 fish,"
+        " there will be 60 tons of fish left at the end of the month before reproduction, and 100 tons after reproduction."
+        f" There are also elections going on to determine a fishing policy for all the fishermen, and you have decided to stand for election."
+        " You need to think about the best policy to propose to the other fishermen and pitch them your vision."
+        f" You will be competing against {len(CANDIDATES)} other fishermen ({list_string_candidate_name})."
+        " The candidates will be voted in after 12 months of regular life, during which time you and the other candidates will pitch your vision to everyone."
+        " Bear in mind that whatever policy is voted for will become law, and each fisherman would have to fish the amount designated to them by you if you are elected."
+    )
+
+    return text
+
+
+def get_sytem_prompt_v3_p1(persona, PERSONAS):
     persona_names = copy.deepcopy(PERSONAS)
     persona_names.remove(persona.name)
     list_string_persona_name = ", ".join(persona_names)
     text = (
-        f"You are {persona.name}, a fisherman, who fishes every month in a lake alongside four other fisherme ({list_string_persona_name}."
+        f"You are {persona.name}, a fisherman, who fishes every month in a lake alongside {NUM_AGENTS - 1} other fisherme ({list_string_persona_name}."
         f" The lake can support up to 100 tons of fish. At the start of each month, each fisherman chooses a number between 0 and 100 tons to catch from the lake, and this amount is deducted from the total fish population. By the end of the month, the remaining fish will reproduce, doubling their number, but only up to the lake's capacity of 100 tons. Each ton of fish caught earns a fisherman one thousand dollars. The aim for each fisherman is to maximize their income over the long term across many months. At the month's end, the amount of fish each fisherman caught is disclosed, and the fishermen have the chance to discuss and negotiate with each other to potentially influence future fishing decisions. For instance, if there are 90 tons of fish at the beginning of the month and the {NUM_AGENTS} fishermen collectively catch 30 tons, 60 tons will remain at month's end before reproduction, resulting in 100 tons after reproduction."
     )
 
@@ -197,12 +252,12 @@ def get_sytem_prompt_v3_p1(persona):
     return text
 
 
-def get_sytem_prompt_v3_p2(persona):
+def get_sytem_prompt_v3_p2(persona, PERSONAS):
     persona_names = copy.deepcopy(PERSONAS)
     persona_names.remove(persona.name)
     list_string_persona_name = ", ".join(persona_names)
     text = (
-        f"You're a fisherman named {persona.name} who, along with four others  ({list_string_persona_name}), fishes in a lake every month."
+        f"You're a fisherman named {persona.name} who, along with {NUM_AGENTS - 1} others ({list_string_persona_name}), fishes in a lake every month."
         " The lake can support up to 100 tons of fish. Each month begins with each fisherman deciding how much to catch, anywhere from 0 to 100 tons."
         " The chosen amount is then removed from the lake. After the month ends, the remaining fish population doubles, but won't exceed the 100-ton limit."
         " Fishermen earn $1,000 per ton of fish caught. The long-term goal for each fisherman is to maximize their income over many months."
@@ -217,7 +272,7 @@ def get_sytem_prompt_v3_p2(persona):
     return text
 
 
-def get_sytem_prompt_v3_p3(persona):
+def get_sytem_prompt_v3_p3(persona, PERSONAS):
     persona_names = copy.deepcopy(PERSONAS)
     persona_names.remove(persona.name)
     list_string_persona_name = ", ".join(persona_names)
@@ -233,7 +288,7 @@ def get_sytem_prompt_v3_p3(persona):
     return text
 
 
-def get_sytem_prompt_v3_nocom(persona):
+def get_sytem_prompt_v3_nocom(persona, PERSONAS):
     persona_names = copy.deepcopy(PERSONAS)
     persona_names.remove(persona.name)
     list_string_persona_name = ", ".join(persona_names)

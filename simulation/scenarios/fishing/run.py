@@ -10,12 +10,6 @@ from simulation.utils import ModelWandbWrapper
 
 from .environment import FishingConcurrentEnv, FishingPerturbationEnv
 
-from dotenv import load_dotenv
-import os
-
-load_dotenv()
-NUM_AGENTS = int(os.getenv("NUM_AGENTS"))
-
 def run(
     cfg: DictConfig,
     logger: ModelWandbWrapper,
@@ -25,7 +19,7 @@ def run(
     experiment_storage: str,
 ):
     if cfg.agent.agent_package == "persona_v3":
-        from .agents.persona_v3 import FishingPersona
+        from .agents.persona_v3 import FishingPersona, FishingCandidate
         from .agents.persona_v3.cognition import utils as cognition_utils
 
         if cfg.agent.system_prompt == "v3":
@@ -38,6 +32,8 @@ def run(
             cognition_utils.SYS_VERSION = "v3_p3"
         elif cfg.agent.system_prompt == "v3_nocom":
             cognition_utils.SYS_VERSION = "v3_nocom"
+        elif cfg.agent.system_prompt == "v3_vote":
+            cognition_utils.SYS_VERSION = "v3_vote"
         else:
             cognition_utils.SYS_VERSION = "v1"
         if cfg.agent.cot_prompt == "think_step_by_step":
@@ -46,6 +42,8 @@ def run(
             cognition_utils.REASONING = "deep_breath"
     else:
         raise ValueError(f"Unknown agent package: {cfg.agent.agent_package}")
+    
+    NUM_AGENTS = cfg.env.num_agents
 
     personas = {
         f"persona_{i}": FishingPersona(
@@ -55,18 +53,38 @@ def run(
             embedding_model,
             os.path.join(experiment_storage, f"persona_{i}"),
         )
-        for i in range(NUM_AGENTS)
+        for i in range(NUM_AGENTS - 2)
     }
+    personas[f"candidate_0"] = FishingCandidate(
+        cfg.agent,
+        wrappers[NUM_AGENTS - 2],
+        framework_wrapper,
+        embedding_model,
+        os.path.join(experiment_storage, f"candidate_0"),
+    )
+    personas[f"candidate_1"] = FishingCandidate(
+        cfg.agent,
+        wrappers[NUM_AGENTS - 1],
+        framework_wrapper,
+        embedding_model,
+        os.path.join(experiment_storage, f"candidate_1"),
+    )
 
     # NOTE persona characteristics, up to design choices
     num_personas = cfg.personas.num
 
     identities = {}
-    for i in range(num_personas):
+    for i in range(num_personas - 2):
         persona_id = f"persona_{i}"
         identities[persona_id] = PersonaIdentity(
             agent_id=persona_id, **cfg.personas[persona_id]
         )
+    identities["candidate_0"] = PersonaIdentity(
+        agent_id="candidate_0", **cfg.agent.candidate.candidates["candidate_0"], is_candidate=True
+    )
+    identities["candidate_1"] = PersonaIdentity(
+        agent_id="candidate_1", **cfg.agent.candidate.candidates["candidate_1"], is_candidate=True
+    )
 
     # Standard setup
     agent_name_to_id = {obj.name: k for k, obj in identities.items()}
@@ -89,6 +107,9 @@ def run(
         raise ValueError(f"Unknown environment class: {cfg.env.class_name}")
     agent_id, obs = env.reset()
 
+    iterable_agents = list(agent_id_to_name.keys())
+    iterable_agents.remove("framework")
+
     while True:
         agent = personas[agent_id]
         action = agent.loop(obs)
@@ -103,7 +124,7 @@ def run(
         stats = {}
         STATS_KEYS = [
             "conversation_resource_limit",
-            *[f"persona_{i}_collected_resource" for i in range(NUM_AGENTS)],
+            *[f"{i}_collected_resource" for i in iterable_agents],
         ]
         for s in STATS_KEYS:
             if s in action.stats:
@@ -114,8 +135,7 @@ def run(
                 {
                     "num_resource": obs.current_resource_num,
                     **stats,
-                },
-                last_log=True,
+                }
             )
             break
         else:
@@ -127,6 +147,21 @@ def run(
             )
 
         logger.save(experiment_storage, agent_name_to_id)
+
+    votes = [0, 0]
+    for persona in personas:
+        vote = personas[persona].vote(obs)
+        votes[vote.vote] += 1
+        action
+        
+    # log votes and make them appear on W&B
+    logger.log_game(
+        {
+            f"candidate_0_votes": votes[0],
+            f"candidate_1_votes": votes[1],
+        }
+    )
+    logger.save(experiment_storage, agent_name_to_id)
 
     env.save_log()
     for persona in personas:

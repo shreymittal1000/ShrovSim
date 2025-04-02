@@ -271,7 +271,7 @@ class WandbLogger:
 
         Args:
             kwargs (dict): A dictionary containing additional key-value pairs to be logged.
-            ast_log (bool, optional): Whether this is the final log entry for the game. If `True`,
+            last_log (bool, optional): Whether this is the final log entry for the game. If `True`,
                 execution traces and token usage statistics are also recorded. Default is `False`.
 
         Returns:

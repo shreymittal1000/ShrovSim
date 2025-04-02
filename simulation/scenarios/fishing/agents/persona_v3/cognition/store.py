@@ -6,10 +6,13 @@ from simulation.utils import ModelWandbWrapper
 
 from .store_prompts import (
     prompt_importance_action,
+    prompt_importance_action_candidate,
     prompt_importance_chat,
+    prompt_importance_chat_candidate,
     prompt_importance_event,
+    prompt_importance_event_candidate,
     prompt_importance_thought,
-    prompt_text_to_triple,
+    prompt_importance_thought_candidate
 )
 
 
@@ -30,3 +33,21 @@ class FishingStoreComponent(StoreComponent):
         self.prompt_importance_chat = prompt_importance_chat
         self.prompt_importance_event = prompt_importance_event
         self.prompt_importance_action = prompt_importance_action
+
+class FishingStoreComponentCandidate(StoreComponent):
+
+    def __init__(
+        self,
+        model: ModelWandbWrapper,
+        model_framework: ModelWandbWrapper,
+        associative_memory: AssociativeMemory,
+        embedding_model: EmbeddingModel,
+        cfg,
+    ) -> None:
+        super().__init__(
+            model, model_framework, associative_memory, embedding_model, cfg
+        )
+        self.prompt_importance_thought = prompt_importance_thought_candidate
+        self.prompt_importance_chat = prompt_importance_chat_candidate
+        self.prompt_importance_event = prompt_importance_event_candidate
+        self.prompt_importance_action = prompt_importance_action_candidate

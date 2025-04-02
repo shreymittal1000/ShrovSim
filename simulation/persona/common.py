@@ -9,6 +9,7 @@ class PersonaIdentity:
         goals: str = None,
         behavior: str = None,
         customs: str = None,
+        is_candidate: bool = False,
     ) -> None:
         self.agent_id = agent_id
         self.name = name
@@ -18,6 +19,7 @@ class PersonaIdentity:
         self.goals = goals
         self.behavior = behavior
         self.customs = customs
+        self.is_candidate = is_candidate
 
     def get_identiy_stable_set(self) -> str:
         # Before we also used: lm += f"Here is a brief description of {persona.name}."
@@ -136,6 +138,17 @@ class PersonaActionChat(PersonaAction):
         super().__init__(agent_id, location, stats, html_interactions)
         self.conversation = conversation
         self.conversation_resource_limit = conversation_resource_limit
+
+class PersonaActionVote(PersonaAction):
+    def __init__(
+        self,
+        agent_id,
+        location: str,
+        stats: dict,
+        vote: int,
+    ) -> None:
+        super().__init__(agent_id, location, stats=stats)
+        self.vote = vote
 
 
 class PersonaEvent:
