@@ -73,6 +73,7 @@ def prompt_converse_utterance_in_group(
             stop_regex=r"Conversation conclusion by me:",  # name can be mispelled by LLM sometimes
         )
         utterance = lm["utterance"].strip()
+
         if len(utterance) > 0 and utterance[-1] == '"' and utterance[0] == '"':
             utterance = utterance[1:-1]
         lm += ANSWER_STOP
@@ -157,6 +158,7 @@ def prompt_converse_utterance_in_group_candidate(
             stop_regex=r"Conversation conclusion by me:",  # name can be mispelled by LLM sometimes
         )
         utterance = lm["utterance"].strip()
+
         if len(utterance) > 0 and utterance[-1] == '"' and utterance[0] == '"':
             utterance = utterance[1:-1]
         lm += ANSWER_STOP

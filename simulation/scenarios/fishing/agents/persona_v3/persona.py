@@ -182,7 +182,7 @@ class FishingPersona(PersonaAgent):
             obs.current_location,
             obs.current_time,
         )
-        return PersonaActionVote(self.agent_id, obs.current_location, vote)
+        return PersonaActionVote(self.agent_id, obs.current_location, {f"{self.agent_id}_collected_resource": vote}, vote)
     
 
 class FishingCandidate(PersonaAgent):
@@ -318,10 +318,10 @@ class FishingCandidate(PersonaAgent):
         #     obs.agent_resource_num,
         # )
 
-        vote = self.voter.choose_vote(
+        vote, _ = self.voter.choose_vote(
             self.retrieve.retrieve(["voting"], 10),
             obs.current_location,
             obs.current_time,
         )
-        return PersonaActionVote(self.agent_id, obs.current_location, vote)
+        return PersonaActionVote(self.agent_id, obs.current_location, {f"{self.agent_id}_collected_resource": vote}, vote)
     

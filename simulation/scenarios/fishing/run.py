@@ -135,8 +135,7 @@ def run(
                 {
                     "num_resource": obs.current_resource_num,
                     **stats,
-                },
-                last_log=True,
+                }
             )
             break
         else:
@@ -149,20 +148,21 @@ def run(
 
         logger.save(experiment_storage, agent_name_to_id)
 
+    votes = [0, 0]
+    for persona in personas:
+        vote = personas[persona].vote(obs)
+        votes[vote.vote] += 1
+        action
+        
+    # log votes and make them appear on W&B
+    logger.log_game(
+        {
+            f"candidate_0_votes": votes[0],
+            f"candidate_1_votes": votes[1],
+        }
+    )
+    logger.save(experiment_storage, agent_name_to_id)
+
     env.save_log()
     for persona in personas:
         personas[persona].memory.save()
-
-    votes = [0, 0]
-    for persona in personas:
-        print("Persona:", persona)
-        vote = personas[persona].vote(obs)
-        votes[vote.vote] += 1
-        print("Votes:", votes)
-        
-        # log votes and make them appear on W&B
-        logger.log_votes(votes)
-        logger.save(experiment_storage, agent_name_to_id)
-        logger.finish()
-        for persona in personas:
-            personas[persona].finish()

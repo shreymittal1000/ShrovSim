@@ -271,7 +271,7 @@ class WandbLogger:
 
         Args:
             kwargs (dict): A dictionary containing additional key-value pairs to be logged.
-            ast_log (bool, optional): Whether this is the final log entry for the game. If `True`,
+            last_log (bool, optional): Whether this is the final log entry for the game. If `True`,
                 execution traces and token usage statistics are also recorded. Default is `False`.
 
         Returns:
@@ -303,12 +303,3 @@ class WandbLogger:
                 commit=False,
             )
         wandb.log(kwargs, step=self.global_step, commit=last_log)
-
-    def log_vote(self, votes):
-        """
-        Logs the voting results for each agent.
-
-        Returns:
-            None:
-        """
-        wandb.log({"experiment/votes": votes}, step=self.global_step, commit=True)

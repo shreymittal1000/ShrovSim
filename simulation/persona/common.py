@@ -144,9 +144,10 @@ class PersonaActionVote(PersonaAction):
         self,
         agent_id,
         location: str,
+        stats: dict,
         vote: int,
     ) -> None:
-        super().__init__(agent_id, location)
+        super().__init__(agent_id, location, stats=stats)
         self.vote = vote
 
 

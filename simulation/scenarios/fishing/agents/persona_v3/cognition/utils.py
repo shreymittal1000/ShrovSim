@@ -234,9 +234,6 @@ def candidate_prompt(persona):
         " Bear in mind that whatever policy is voted for will become law, and each fisherman would have to fish the amount designated to them by you if you are elected."
     )
 
-    if persona.goals != "":
-        text += persona.goals
-
     return text
 
 
