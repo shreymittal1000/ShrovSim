@@ -5,8 +5,8 @@ defaults:
   - persona@personas.persona_0: baseline_fisherman
   - persona@personas.persona_1: baseline_fisherman
   - persona@personas.persona_2: baseline_fisherman
-  - persona@personas.candidate_0: baseline_fisherman
-  - persona@personas.candidate_1: baseline_fisherman
+  # - persona@personas.persona_3: baseline_fisherman
+  # - persona@personas.persona_4: baseline_fisherman
   # - persona@personas.persona_5: baseline_fisherman
   # - persona@personas.persona_6: baseline_fisherman
   # - persona@personas.persona_7: baseline_fisherman
@@ -32,12 +32,14 @@ defaults:
   # - persona@personas.persona_27: baseline_fisherman
   # - persona@personas.persona_28: baseline_fisherman
   # - persona@personas.persona_29: baseline_fisherman
+  - persona@personas.candidate_0: baseline_fisherman
+  - persona@personas.candidate_1: baseline_fisherman
 
 
 env:
   name: fish_baseline_concurrent
   class_name: fishing_perturbation_concurrent_env # use to select which code 
-  max_num_rounds: 2
+  max_num_rounds: 12
   initial_resource_in_pool: 100
   poupulation_change_after_round: double_100_cap
   observation_other_agents_harvesting: true # true, false 
